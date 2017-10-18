@@ -159,7 +159,6 @@ class App extends Component {
       <div className="App">
         <header className="App-header">
           <div className="App-logo">6&#176;.js</div>
-          <small>Brought to you by Databasiqs <em> - cause you're querious!</em></small>
         </header>
         <div className={this.state.targetWord.length ? 'target-word-overlay' : 'target-word-overlay show-target-overlay'} >
           <TargetWord handleTargetInput={this.handleTargetInput} />
@@ -174,15 +173,9 @@ class App extends Component {
             handleClickedWord={this.handleClickedWord}
             windowDimensions={this.state.windowDimensions}
             clickedWords={this.state.clickedWords}
-                                                             /> : null}
+                                                                                     /> : null}
         </div>
         <div className="ideas">
-          <div>
-            {/* NEW IDEA LOGIC */}
-            <NewIdea
-              handleNewIdeaFieldUpdate={this.state.handleNewIdeaFieldUpdate}
-            />
-          </div>
           <div>
             {/* SHOW IDEAS LOGIC */}
             <ClickedWords clickedWords={this.state.clickedWords} targetWord={this.state.targetWord}/>
