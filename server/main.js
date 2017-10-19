@@ -38,18 +38,6 @@ app.use(express.static(path.join(__dirname, 'client')));
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(bodyParser.json());
 
-
-/**
- * Create middleware function for scraper controller to add locals object to request for adding data
- */
-const createLocalsObj = (req, res, next) => {
-  req.locals = {};
-  next();
-};
-// Add createLocalsObj as middleware
-app.use(createLocalsObj);
-
-
 /**
  * use the routes module for incoming requests to our api
  */

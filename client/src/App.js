@@ -33,7 +33,7 @@ class App extends Component {
         height: 500
       },
       // Saved ideas component
-      ideas: [],
+      scores: [],
       targetWord: '',
       clickedWords: ['javascript']
     };
@@ -46,9 +46,10 @@ class App extends Component {
     //New Idea methods
     this.handleNewIdeaFieldUpdate = this.handleNewIdeaFieldUpdate.bind(this);
     // get Idea method
-    this.getIdea = this.getIdea.bind(this);
+    this.getScores = this.getScores.bind(this);
     this.updateWindowDimensions = this.updateWindowDimensions.bind(this);
     this.handleTargetInput = this.handleTargetInput.bind(this);
+    this.handleScoreSubmit = this.handleScoreSubmit.bind(this);
   }
 
   updateWindowDimensions() {
@@ -74,10 +75,10 @@ class App extends Component {
    */
   componentDidMount() {
     this.getWords();
-    this.getIdea();
     this.updateWindowDimensions();
     window.addEventListener('resize', this.updateWindowDimensions);
   }
+
   componentWillUnmount() {
     window.removeEventListener('resize', this.updateWindowDimensions);
   }
@@ -115,6 +116,7 @@ class App extends Component {
     let newState = { clickedWords: this.state.clickedWords.concat(word) };
     if (newState.clickedWords.includes(this.state.targetWord)) {
       newState = { ...newState, isWinner: true };
+      this.getScores();
     }
     this.setState(newState);
     setTimeout(this.getWords, 0);
@@ -122,19 +124,47 @@ class App extends Component {
   }
 
   /**
-  * getIdea - fetch Idea DB for title, idea, and tag
+  * getScores - fetch username, targetword, and score from high_scores table in db
   */
-  getIdea() {
-    fetch('http://localhost:8080/api/ideas')
+  getScores() {
+    fetch('http://localhost:8080/api/scores')
       .then((response) => response.json())
-      .then(gotIdea => {
+      .then(gotScores => {
         this.setState({
-          ideas: gotIdea
+          scores: gotScores
         });
       })
       .catch(err => {
         console.log('error', err);
       });
+  }
+
+  handleScoreSubmit(event) {
+    event.preventDefault();
+    if (event.keyCode === 13) {
+
+      let data = {
+        username: event.target.value,
+        targetword: this.state.targetWord,
+        score: this.state.clickedWords.length
+      };
+
+      let myHeaders = new Headers();
+      myHeaders.set('Content-Type', 'application/json');
+
+      event.target.value = '';
+      fetch('http://localhost:8080/api/scores', {
+        method: "POST",
+        headers: myHeaders,
+        body: JSON.stringify(data)
+      })
+        .then(() => {
+          this.getScores();
+        })
+        .catch(err => {
+          console.log('error', err);
+        });
+    }
   }
 
   /**
@@ -166,7 +196,7 @@ class App extends Component {
           {/* VIS RENDER LOGIC */}
           {this.state.visLoading ? <VisLoading /> : null}
           {this.state.visError ? <VisError /> : null}
-          {this.state.isWinner ? <VisWinner /> : null}
+          {this.state.isWinner ? <VisWinner scores={this.state.scores} handleScoreSubmit={this.handleScoreSubmit}/> : null}
           {this.state.scrapedWords && !this.state.visError && !this.state.isWinner ? <Vis
             scrapedWords={this.state.scrapedWords}
             handleClickedWord={this.handleClickedWord}
