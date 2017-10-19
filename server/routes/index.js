@@ -5,14 +5,12 @@ const express    = require('express'),
  * require controllers
  */
 const scraperController = require('../controllers/scraperController.js'),
-      ideaController = require('../controllers/ideaController.js'),
-      userController = require('../controllers/userController.js');
+      highScoreController = require('../controllers/highScoreController.js');
+
 
 
 /**
- * Scraped data handler
- *  - scrapes data from Medium and Reddit then
- *    sanitizes the data before outputting to client
+ * gets words from API
  */
 router
   .route('/scraper')
@@ -24,21 +22,8 @@ router
  *  - Get all ideas for user
  */
 router
-  .route('/ideas')
-  .get(ideaController.getIdea)
-  .post(ideaController.createIdea);
-router
-  .route('/ideas/:userId')
-  .get(ideaController.getIdeasByUser);
-
-/**
- * Users handler
- *  - Get existing user
- *  - Create a new user
- */
-router
-  .route('/user')
-  .get(userController.getUser)
-  .post(userController.createUser);
+  .route('/scores')
+  .get(highScoreController.getScores)
+  .post(highScoreController.createScore);
 
 module.exports = router;

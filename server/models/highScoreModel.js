@@ -1,7 +1,7 @@
 class HighScore {
   constructor(data) {
     this.username = data.username;
-    this.targetWord = data.targetWord;
+    this.targetword = data.targetword;
     this.score = Number(data.score);
   }
 }
